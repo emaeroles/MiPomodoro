@@ -1,5 +1,5 @@
 ﻿
-namespace Pomodoro
+namespace MiPomodoro
 {
     partial class FrmPomodoro
     {
@@ -31,7 +31,7 @@ namespace Pomodoro
         {
             this.components = new System.ComponentModel.Container();
             this.CboTmpPomodoro = new System.Windows.Forms.ComboBox();
-            this.BtnPlay = new System.Windows.Forms.Button();
+            this.BtnComenzar = new System.Windows.Forms.Button();
             this.CboDesCorto = new System.Windows.Forms.ComboBox();
             this.CboDesLargo = new System.Windows.Forms.ComboBox();
             this.CboCantidad = new System.Windows.Forms.ComboBox();
@@ -51,7 +51,7 @@ namespace Pomodoro
             this.LblDosPuntos = new System.Windows.Forms.Label();
             this.LblMinutos = new System.Windows.Forms.Label();
             this.PnlAyuda = new System.Windows.Forms.Panel();
-            this.BtnVolverAyuda = new System.Windows.Forms.Button();
+            this.BtnVolverAcercaDe = new System.Windows.Forms.Button();
             this.LblCreated = new System.Windows.Forms.Label();
             this.LblVersion = new System.Windows.Forms.Label();
             this.PnlEstadisticas = new System.Windows.Forms.Panel();
@@ -98,16 +98,16 @@ namespace Pomodoro
             this.CboTmpPomodoro.Size = new System.Drawing.Size(40, 21);
             this.CboTmpPomodoro.TabIndex = 3;
             // 
-            // BtnPlay
+            // BtnComenzar
             // 
-            this.BtnPlay.Font = new System.Drawing.Font("Berlin Sans FB", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BtnPlay.Location = new System.Drawing.Point(365, 109);
-            this.BtnPlay.Name = "BtnPlay";
-            this.BtnPlay.Size = new System.Drawing.Size(100, 100);
-            this.BtnPlay.TabIndex = 4;
-            this.BtnPlay.Text = "COMENZAR";
-            this.BtnPlay.UseVisualStyleBackColor = true;
-            this.BtnPlay.Click += new System.EventHandler(this.BtnPlay_Click);
+            this.BtnComenzar.Font = new System.Drawing.Font("Berlin Sans FB", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BtnComenzar.Location = new System.Drawing.Point(365, 109);
+            this.BtnComenzar.Name = "BtnComenzar";
+            this.BtnComenzar.Size = new System.Drawing.Size(100, 100);
+            this.BtnComenzar.TabIndex = 4;
+            this.BtnComenzar.Text = "COMENZAR";
+            this.BtnComenzar.UseVisualStyleBackColor = true;
+            this.BtnComenzar.Click += new System.EventHandler(this.BtnComenzar_Click);
             // 
             // CboDesCorto
             // 
@@ -289,13 +289,13 @@ namespace Pomodoro
             // 
             // LblSegundos
             // 
-            this.LblSegundos.AutoSize = true;
             this.LblSegundos.Font = new System.Drawing.Font("Berlin Sans FB", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LblSegundos.Location = new System.Drawing.Point(260, 130);
             this.LblSegundos.Name = "LblSegundos";
             this.LblSegundos.Size = new System.Drawing.Size(62, 41);
             this.LblSegundos.TabIndex = 3;
             this.LblSegundos.Text = "00";
+            this.LblSegundos.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // BtnStop
             // 
@@ -342,17 +342,17 @@ namespace Pomodoro
             // 
             // LblMinutos
             // 
-            this.LblMinutos.AutoSize = true;
             this.LblMinutos.Font = new System.Drawing.Font("Berlin Sans FB", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LblMinutos.Location = new System.Drawing.Point(192, 130);
             this.LblMinutos.Name = "LblMinutos";
             this.LblMinutos.Size = new System.Drawing.Size(62, 41);
             this.LblMinutos.TabIndex = 4;
             this.LblMinutos.Text = "00";
+            this.LblMinutos.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // PnlAyuda
             // 
-            this.PnlAyuda.Controls.Add(this.BtnVolverAyuda);
+            this.PnlAyuda.Controls.Add(this.BtnVolverAcercaDe);
             this.PnlAyuda.Controls.Add(this.LblCreated);
             this.PnlAyuda.Controls.Add(this.LblVersion);
             this.PnlAyuda.Location = new System.Drawing.Point(320, 40);
@@ -360,15 +360,15 @@ namespace Pomodoro
             this.PnlAyuda.Size = new System.Drawing.Size(28, 28);
             this.PnlAyuda.TabIndex = 18;
             // 
-            // BtnVolverAyuda
+            // BtnVolverAcercaDe
             // 
-            this.BtnVolverAyuda.Location = new System.Drawing.Point(216, 190);
-            this.BtnVolverAyuda.Name = "BtnVolverAyuda";
-            this.BtnVolverAyuda.Size = new System.Drawing.Size(75, 23);
-            this.BtnVolverAyuda.TabIndex = 2;
-            this.BtnVolverAyuda.Text = "Volver";
-            this.BtnVolverAyuda.UseVisualStyleBackColor = true;
-            this.BtnVolverAyuda.Click += new System.EventHandler(this.BtnVolverAyuda_Click);
+            this.BtnVolverAcercaDe.Location = new System.Drawing.Point(216, 190);
+            this.BtnVolverAcercaDe.Name = "BtnVolverAcercaDe";
+            this.BtnVolverAcercaDe.Size = new System.Drawing.Size(75, 23);
+            this.BtnVolverAcercaDe.TabIndex = 2;
+            this.BtnVolverAcercaDe.Text = "Volver";
+            this.BtnVolverAcercaDe.UseVisualStyleBackColor = true;
+            this.BtnVolverAcercaDe.Click += new System.EventHandler(this.BtnVolverAcercaDe_Click);
             // 
             // LblCreated
             // 
@@ -548,12 +548,13 @@ namespace Pomodoro
             this.Controls.Add(this.CboCantidad);
             this.Controls.Add(this.CboDesLargo);
             this.Controls.Add(this.CboDesCorto);
-            this.Controls.Add(this.BtnPlay);
+            this.Controls.Add(this.BtnComenzar);
             this.Controls.Add(this.CboTmpPomodoro);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "FrmPomodoro";
             this.Text = "Mi Pomodoro";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmPomodoro_FormClosing);
             this.Load += new System.EventHandler(this.FrmPomodoro_Load);
             this.PnlTimer.ResumeLayout(false);
             this.PnlTimer.PerformLayout();
@@ -571,7 +572,7 @@ namespace Pomodoro
         #endregion
 
         private System.Windows.Forms.ComboBox CboTmpPomodoro;
-        private System.Windows.Forms.Button BtnPlay;
+        private System.Windows.Forms.Button BtnComenzar;
         private System.Windows.Forms.ComboBox CboDesCorto;
         private System.Windows.Forms.ComboBox CboDesLargo;
         private System.Windows.Forms.ComboBox CboCantidad;
@@ -607,7 +608,7 @@ namespace Pomodoro
         private System.Windows.Forms.Panel PnlAyuda;
         private System.Windows.Forms.Label LblProximamente;
         private System.Windows.Forms.Button BtnVolverEstadisticas;
-        private System.Windows.Forms.Button BtnVolverAyuda;
+        private System.Windows.Forms.Button BtnVolverAcercaDe;
         private System.Windows.Forms.Label LblCreated;
         private System.Windows.Forms.Label LblVersion;
     }

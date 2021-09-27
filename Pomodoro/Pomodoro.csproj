@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{4D4FAB0B-DD59-4AD3-8334-16987394E93C}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>Pomodoro</RootNamespace>
-    <AssemblyName>Pomodoro</AssemblyName>
+    <RootNamespace>MiPomodoro</RootNamespace>
+    <AssemblyName>MiPomodoro</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -32,6 +32,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>IconoPomodoro.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -46,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BBDD.cs" />
     <Compile Include="FrmPomodoro.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -54,7 +58,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Timer.cs" />
+    <Compile Include="Pomodoros.cs" />
     <EmbeddedResource Include="FrmPomodoro.resx">
       <DependentUpon>FrmPomodoro.cs</DependentUpon>
     </EmbeddedResource>
@@ -86,6 +90,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Paso.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="IconoPomodoro.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

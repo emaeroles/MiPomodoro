@@ -11,16 +11,11 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 
-namespace Pomodoro
+namespace MiPomodoro
 {
     public partial class FrmPomodoro : Form
     {
-        private double segundos;
-        private double minutos;
-        private double decimas;
-        private int pomodoro;
-        private int cantPomodoros;
-        private bool descanso;
+        Pomodoros pomodoros;
         
         public FrmPomodoro()
         {
@@ -29,6 +24,8 @@ namespace Pomodoro
 
         private void FrmPomodoro_Load(object sender, EventArgs e)
         {
+            CheckForIllegalCrossThreadCalls = false; // Por los hilos
+
             this.CenterToScreen();
             this.MaximizeBox = false;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -39,81 +36,54 @@ namespace Pomodoro
             CboDesLargo.SelectedIndex = 1;
             CboCantidad.SelectedIndex = 2;
         }
-
-        private void BtnPlay_Click(object sender, EventArgs e)
+        // -----------------------------------------------------------------------------------------------------------------
+        //
+        //
+        private void BtnComenzar_Click(object sender, EventArgs e)
         {
+            pomodoros = new Pomodoros(Convert.ToInt32(CboCantidad.SelectedItem),
+                                      Convert.ToInt32(CboDesCorto.SelectedItem),
+                                      Convert.ToInt32(CboDesLargo.SelectedItem),
+                                      Convert.ToInt32(CboTmpPomodoro.SelectedItem));
+            pomodoros.evtSegundos += Evento_Actualizar;
+            pomodoros.evtPaso += Evento_Paso;
+
             PnlTimer.Visible = true;
-            cantPomodoros = Convert.ToInt32(CboCantidad.SelectedItem);
-            pomodoro = 0;
-            descanso = true;
-            menuStrip1.Visible = false;
             PnlTimer.Dock = System.Windows.Forms.DockStyle.Fill;
-            Paso(false);
-            VisibilidadLabels(cantPomodoros);
+            menuStrip1.Visible = false;
+
+            VisibilidadLabels(Convert.ToInt32(CboCantidad.SelectedItem));
+            CambioAparienciaPaso();
+            pomodoros.Iniciar();
         }
 
-        private void IniciarTimer()
+        private void Evento_Actualizar(object sender, EventArgs e)
         {
-            if(descanso && pomodoro < cantPomodoros)
-            {
-                minutos = Convert.ToInt32(CboDesCorto.SelectedItem);
-            }
-            else if (descanso && pomodoro == cantPomodoros)
-            {
-                minutos = Convert.ToInt32(CboDesLargo.SelectedItem);
-            }
-            else
-            {
-                minutos = Convert.ToInt32(CboTmpPomodoro.SelectedItem);
-            }
-            decimas = 10;
-            segundos = 0;
-            Timer.Start();
-            LblMinutos.Text = minutos.ToString().Length < 2 ? "0" + minutos.ToString() : minutos.ToString();
-            LblSegundos.Text = segundos.ToString().Length < 2 ? "0" + segundos.ToString() : segundos.ToString();
+            LblMinutos.Text = pomodoros.Minutos.ToString().Length < 2 ? "0" + pomodoros.Minutos.ToString() : pomodoros.Minutos.ToString();
+            LblSegundos.Text = pomodoros.Segundos.ToString().Length < 2 ? "0" + pomodoros.Segundos.ToString() : pomodoros.Segundos.ToString();
         }
-
-        private void Timer_Tick(object sender, EventArgs e)
-        {
-            decimas--;
-            int dec = (int)Math.Round(decimas);
-            if (dec == 0)
-            {
-                decimas = 10;
-                Segundos();
-            }
-        }
-
-        private void Segundos()
-        {
-            segundos--;
-            if (segundos == -1)
-            {
-                segundos = 59;
-                Minutos();
-            }
-            LblSegundos.Text = segundos.ToString().Length < 2 ? "0" + segundos.ToString() : segundos.ToString();
-        }
-
-        private void Minutos()
-        {
-            minutos--;
-            if (minutos == -1)
-            {
-                Paso(true);
-            }
-            else
-            {
-                LblMinutos.Text = minutos.ToString().Length < 2 ? "0" + minutos.ToString() : minutos.ToString();
-            }
-        }
-
+        // -----------------------------------------------------------------------------------------------------------------
+        // Lo del Paso
+        //
         private void BtnPaso_Click(object sender, EventArgs e)
         {
-            Paso(false);
+            pomodoros.Paso();
+            CambioAparienciaPaso();         
         }
 
-        private void CambioTextoBtnPaso()
+        private void Evento_Paso(object sender, EventArgs e)
+        {
+            CambioAparienciaPaso();
+
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                this.WindowState = FormWindowState.Normal;
+            }
+            this.Activate();
+            this.CenterToScreen();
+        }
+
+        private void CambioAparienciaPaso()
         {
             if (BtnPaso.Text == "Descanso")
             {
@@ -123,45 +93,72 @@ namespace Pomodoro
             {
                 BtnPaso.Text = "Descanso";
             }
-        }
 
-        private void Paso(bool automatico)
-        {
-            CambioTextoBtnPaso();
-
-            if (descanso == false)
-            {
-                descanso = true;
+            if (pomodoros.Descanso)
                 CambioColorGreen();
+            else
+                CambioColorRed();
+        }
+        // -----------------------------------------------------------------------------------------------------------------
+        // Pausa, Play, Stop y FormClosing
+        //
+        private void BtnPausePlay_Click(object sender, EventArgs e)
+        {
+            if (BtnPausePlay.Text == "Pause")
+            {
+                BtnPausePlay.Text = "Play";
+                pomodoros.Pause();
             }
             else
             {
-                pomodoro++;
-                descanso = false;
-                if (pomodoro > cantPomodoros)
-                {
-                    pomodoro = 1;
-                }
-                CambioColorRed();
-            }           
-
-            if (automatico)
-            {
-                PlaySonido();
-                if (this.WindowState == FormWindowState.Minimized)
-                {
-                    this.WindowState = FormWindowState.Normal;
-                }
-                this.Activate();
-                this.CenterToScreen();
+                BtnPausePlay.Text = "Pause";
+                pomodoros.Play();
             }
-
-            IniciarTimer();
         }
 
+        private void BtnStop_Click(object sender, EventArgs e)
+        {
+            PnlTimer.Visible = false;
+            menuStrip1.Visible = true;
+
+            pomodoros.Pause();
+            BBDD.acuBBDD += pomodoros.AcuTiempo;
+            //BBDD.Ver();
+        }
+
+        private void FrmPomodoro_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            BBDD.acuBBDD += pomodoros.AcuTiempo;
+            //BBDD.Ver();
+        }
+        // -----------------------------------------------------------------------------------------------------------------
+        // Metodos paneles estadisticas y acerca de
+        //
+        private void estadisticasToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PnlEstadisticas.Dock = System.Windows.Forms.DockStyle.Fill;
+        }
+
+        private void acercaDeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PnlAyuda.Dock = System.Windows.Forms.DockStyle.Fill;
+        }
+
+        private void BtnVolverEstadisticas_Click(object sender, EventArgs e)
+        {
+            PnlEstadisticas.Dock = System.Windows.Forms.DockStyle.None;
+        }
+
+        private void BtnVolverAcercaDe_Click(object sender, EventArgs e)
+        {
+            PnlAyuda.Dock = System.Windows.Forms.DockStyle.None;
+        }
+        // -----------------------------------------------------------------------------------------------------------------
+        // Metodos labels pomodoros, AL PASAR
+        //
         private void CambioColorGreen()
         {
-            switch (pomodoro)
+            switch (pomodoros.Pomodoro)
             {
                 case 1:
                     LblP1.BackColor = Color.Green;
@@ -194,7 +191,7 @@ namespace Pomodoro
 
         private void CambioColorRed()
         {
-            switch (pomodoro)
+            switch (pomodoros.Pomodoro)
             {
                 case 1:
                     LblP1.BackColor = Color.Red;
@@ -230,33 +227,6 @@ namespace Pomodoro
                 default:
                     break;
             }
-        }
-
-        private void BtnPausePlay_Click(object sender, EventArgs e)
-        {
-            if (BtnPausePlay.Text == "Pause")
-            {
-                BtnPausePlay.Text = "Play";
-                Timer.Stop();
-            }
-            else
-            {
-                BtnPausePlay.Text = "Pause";
-                Timer.Start();
-            }
-        }
-
-        private void BtnStop_Click(object sender, EventArgs e)
-        {
-            PnlTimer.Visible = false;
-            menuStrip1.Visible = true;
-            Timer.Stop();
-        }
-
-        private void PlaySonido()
-        {
-            SoundPlayer Sonido = new SoundPlayer(Properties.Resources.Paso);
-            Sonido.Play();
         }
 
         private void VisibilidadLabels(int cantidad)
@@ -385,26 +355,6 @@ namespace Pomodoro
             LblP7.Location = new Point(356, 50);
             LblP8.Visible = true;
             LblP8.Location = new Point(407, 50);
-        }
-
-        private void estadisticasToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            PnlEstadisticas.Dock = System.Windows.Forms.DockStyle.Fill;
-        }
-
-        private void acercaDeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            PnlAyuda.Dock = System.Windows.Forms.DockStyle.Fill;
-        }
-
-        private void BtnVolverEstadisticas_Click(object sender, EventArgs e)
-        {
-            PnlEstadisticas.Dock = System.Windows.Forms.DockStyle.None;
-        }
-
-        private void BtnVolverAyuda_Click(object sender, EventArgs e)
-        {
-            PnlAyuda.Dock = System.Windows.Forms.DockStyle.None;
         }
     }
 }
